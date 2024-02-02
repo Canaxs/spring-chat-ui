@@ -13,8 +13,7 @@ import {Token} from "../../models/token";
 export class LoginComponent implements OnInit {
 
   rightPanel= false;
-  @Input() loginUsername: string | undefined;
-  @Input() loginPassword: string | undefined;
+  loginUsername: string = "";
 
 
   constructor(private AuthService: AuthService,private router: Router) {
@@ -25,12 +24,11 @@ export class LoginComponent implements OnInit {
   signSwitch(){
     this.rightPanel = !this.rightPanel;
   }
-  login() {
-    const username = document.getElementById("loginUsername");
-    const password = document.getElementById("loginPassword");
+  login(username:string,password: string) {
     let token: Observable<Token>;
-    if(username.innerText != null && password.innerText != null) {
-      token = this.AuthService.login(username.innerText,password.innerText);
+    if(username != null && password != null) {
+      console.log(username,password);
+      token = this.AuthService.login(username,password);
     }
     token.subscribe(response => {
       if(response.token != null) {

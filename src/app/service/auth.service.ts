@@ -16,7 +16,7 @@ export class AuthService {
     this.baseUrl = environment.baseUrl;
   }
   login(username: string,password: string){
-    return this.http.post<Token>(this.baseUrl+"/login", {
+    return this.http.post<Token>(this.baseUrl+"/auth/login", {
       username: username,
       password: password
     }).pipe(

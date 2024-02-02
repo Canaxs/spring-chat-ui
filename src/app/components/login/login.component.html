@@ -8,10 +8,10 @@
     </form>
   </div>
   <div class="form-container sign-in-container">
-    <form action="#" (ngSubmit)="login()">
+    <form action="#" (ngSubmit)="login(username.value,password.value)">
       <h1>Giriş yap</h1>
-      <input type="text" placeholder="Username" id="loginUsername" />
-      <input type="password" placeholder="Password" id="loginPassword" />
+      <input type="text" placeholder="Username" #username />
+      <input type="password" placeholder="Password" #password />
       <button type="submit">Giriş yap</button>
     </form>
   </div>
