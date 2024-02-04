@@ -173,19 +173,14 @@
       </div>
     </div>
 
-    <div class="chat-container">
-      <div class="message-box my-message">
-        <p><span style="margin-right: 95%">Dexton</span>I've been waiting to see that show asap!<br><span>07:43</span></p>
-      </div>
-      <div class="message-box friend-message">
-        <p><span style="margin-right: 95%">Dexton</span>Ahh, I can't believe you do too!<br><span>07:45</span></p>
+    <div class="chat-container" id="chat-container">
+      <div *ngFor="let message of messageList" [className]="message.sender === username ? 'message-box my-message' : 'message-box friend-message'">
+        <p><span style="margin-right: 95%">{{ message.sender }}</span>{{ message.message }}<br><span>{{ message.date }}</span></p>
       </div>
     </div>
     <div class="chatbox-input">
-      <i class="fa-regular fa-face-grin"></i>
-      <i class="fa-sharp fa-solid fa-paperclip"></i>
-      <input type="text" placeholder="Type a message">
-      <i class="fa-solid fa-microphone"></i>
+      <input type="text" placeholder="Type a message" #chatbox />
+      <button class="message-send" (click)="sendMessage(chatbox.value)">Gönder</button>
     </div>
   </div>
 
