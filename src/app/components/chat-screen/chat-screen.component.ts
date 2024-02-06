@@ -1,14 +1,11 @@
 import {Component, HostListener, OnDestroy, OnInit,} from '@angular/core';
 import {environment} from "../../../environments/environment";
 import {UserService} from "../../service/user.service";
-import {User} from "../../models/user";
-import {Username} from "../../models/username";
-import {HttpHeaders} from "@angular/common/http";
 declare var SockJS;
 
 import {Stomp, StompHeaders} from "@stomp/stompjs";
-import {first, take} from "rxjs/operators";
-import {Observable} from "rxjs";
+import {AuthService} from "../../service/auth.service";
+import {Router} from "@angular/router";
 
 declare interface Message {
   sender: string;
@@ -28,10 +25,12 @@ export class ChatScreenComponent implements OnInit,OnDestroy{
   message: Message;
   username = "";
   public stompClient;
+  isExpired: boolean;
 
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService,private authService: AuthService,private router: Router) {
     this.userService.getUsername().subscribe(res => this.username = res.username)
+
   }
 
   ngOnDestroy() {
@@ -39,6 +38,12 @@ export class ChatScreenComponent implements OnInit,OnDestroy{
   }
 
   ngOnInit(): void {
+    this.authService.isExpired().then(res => {
+      if(res.isExpired) {
+        this.userService.removeToken();
+        this.router.navigate(['/login']);
+      }
+    })
     this.connect();
   }
 
@@ -69,8 +74,18 @@ export class ChatScreenComponent implements OnInit,OnDestroy{
     let headers = {
       "Authorization":"Bearer "+this.userService.getToken()
     }
-    this.stompClient.send("/chat", headers,
-      JSON.stringify({'sender':this.username, 'message':chatbox}));
+    try {
+      this.stompClient.send("/chat", headers,
+        JSON.stringify({'sender': this.username, 'message': chatbox}));
+    }
+    catch (e) {
+      this.authService.isExpired().then(res => {
+        if(res.isExpired) {
+          this.userService.removeToken();
+          this.router.navigate(['/login']);
+        }
+      })
+    }
   }
   disconnect() {
     if(this.stompClient != null) {
