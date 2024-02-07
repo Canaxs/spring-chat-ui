@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {ControlService} from "./control.service";
 import {HttpMethod} from "../components/enums/http-method";
 import {Username} from "../models/username";
+import {CreateUserRequest} from "../models/createUserRequest";
 
 
 const TOKEN = 'token';
@@ -42,5 +43,15 @@ export class UserService {
     }
     httpHeaders.append('Content-Type', 'application/json');
     return httpHeaders;
+  }
+
+  async createUser(username: string,password: string) {
+    let httpHeaders = new HttpHeaders();
+    httpHeaders.append('Content-Type', 'application/json');
+    const url = this.baseUrl + '/user/create';
+    return await this.http.post<CreateUserRequest>(url,{
+      username: username,
+      password: password
+    }, {headers: httpHeaders}).toPromise()
   }
 }

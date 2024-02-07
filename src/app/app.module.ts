@@ -7,9 +7,11 @@ import { LoginComponent } from './components/login/login.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 import { ChatScreenComponent } from './components/chat-screen/chat-screen.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
-import {RouterModule} from "@angular/router";
+import {ToastrModule} from "ngx-toastr";
+import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {MessageBoxService} from "./service/message-box.service";
 
 @NgModule({
   declarations: [
@@ -17,15 +19,19 @@ import {RouterModule} from "@angular/router";
     LoginComponent,
     LoginPageComponent,
     ChatPageComponent,
-    ChatScreenComponent
+    ChatScreenComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    BrowserAnimationsModule,
+    NoopAnimationsModule,
+    ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ToastrModule.forRoot()
   ],
-  providers: [],
+  providers: [MessageBoxService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

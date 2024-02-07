@@ -6,6 +6,9 @@ declare var SockJS;
 import {Stomp, StompHeaders} from "@stomp/stompjs";
 import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
+import {Observable} from "rxjs";
+import { interval } from 'rxjs';
+import {ChatService} from "../../service/chat.service";
 
 declare interface Message {
   sender: string;
@@ -26,10 +29,14 @@ export class ChatScreenComponent implements OnInit,OnDestroy{
   username = "";
   public stompClient;
   isExpired: boolean;
+  countOnline: string;
 
 
-  constructor(private userService: UserService,private authService: AuthService,private router: Router) {
+  constructor(private userService: UserService,private authService: AuthService,private router: Router,private chatService: ChatService) {
     this.userService.getUsername().subscribe(res => this.username = res.username)
+    interval(5000).subscribe(x => {
+      this.chatService.numberSessions().subscribe(res => this.countOnline = res.onlineNumber)
+    })
 
   }
 
@@ -45,6 +52,7 @@ export class ChatScreenComponent implements OnInit,OnDestroy{
       }
     })
     this.connect();
+    this.chatService.numberSessions().subscribe(res => this.countOnline = res.onlineNumber)
   }
 
   connect() {
